@@ -48,6 +48,7 @@ import eu.toolchain.async.AsyncFramework;
 import eu.toolchain.async.AsyncFuture;
 import eu.toolchain.async.RetryPolicy;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.After;
@@ -81,6 +82,26 @@ public abstract class AbstractSuggestBackendIT {
                 add(new ImmutablePair<>(s3, range));
             }
         };
+
+    private final TagValuesSuggest.Request tagValuesSuggestReq =
+        new TagValuesSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
+            OptionalLimit.empty(), ImmutableList.of());
+
+    private final TagValueSuggest.Request tagValueSuggestReq =
+        new TagValueSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
+            Optional.of("role"));
+
+    private final TagKeyCount.Request tagKeyCountReq =
+        new TagKeyCount.Request(TrueFilter.get(), range, OptionalLimit.empty(),
+            OptionalLimit.empty());
+
+    private final TagSuggest.Request tagSuggestReq =
+        new TagSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
+            MatchOptions.builder().build(), Optional.empty(), Optional.of("ba"));
+
+    private final KeySuggest.Request keySuggestReq =
+        new KeySuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
+            MatchOptions.builder().build(), Optional.of("aa"));
 
     private HeroicCoreInstance core;
 
@@ -127,12 +148,7 @@ public abstract class AbstractSuggestBackendIT {
     public void tagValuesSuggest() throws Exception {
         writeSeries(backend, testSeries);
 
-        final TagValuesSuggest.Request request =
-            new TagValuesSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                OptionalLimit.empty(), ImmutableList.of());
-
-        final TagValuesSuggest result = backend.tagValuesSuggest(request).get();
-
+        final TagValuesSuggest result = getTagValuesSuggest(tagValuesSuggestReq);
         final TagValuesSuggest.Suggestion s = result.getSuggestions().get(0);
 
         assertEquals(
@@ -144,11 +160,7 @@ public abstract class AbstractSuggestBackendIT {
     public void tagValueSuggest() throws Exception {
         writeSeries(backend, testSeries);
 
-        final TagValueSuggest.Request request =
-            new TagValueSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                Optional.of("role"));
-
-        final TagValueSuggest result = backend.tagValueSuggest(request).get();
+        final TagValueSuggest result = getTagValueSuggest(tagValueSuggestReq);
 
         assertEquals(ImmutableSet.of("bar", "baz", "foo"), ImmutableSet.copyOf(result.getValues()));
     }
@@ -157,12 +169,7 @@ public abstract class AbstractSuggestBackendIT {
     public void tagKeyCount() throws Exception {
         writeSeries(backend, testSeries);
 
-        final TagKeyCount.Request request =
-            new TagKeyCount.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                OptionalLimit.empty());
-
-        final TagKeyCount result = backend.tagKeyCount(request).get();
-
+        final TagKeyCount result = getTagKeyCount(tagKeyCountReq);
         final TagKeyCount.Suggestion s = result.getSuggestions().get(0);
 
         assertEquals("role", s.getKey());
@@ -173,17 +180,7 @@ public abstract class AbstractSuggestBackendIT {
     public void tagSuggest() throws Exception {
         writeSeries(backend, testSeries);
 
-        final TagSuggest.Request request =
-            new TagSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                MatchOptions.builder().build(), Optional.empty(), Optional.of("ba"));
-
-        final Set<Pair<String, String>> result = backend
-            .tagSuggest(request)
-            .get()
-            .getSuggestions()
-            .stream()
-            .map(s -> Pair.of(s.getKey(), s.getValue()))
-            .collect(Collectors.toSet());
+        final Set<Pair<String, String>> result = getTagSuggest(tagSuggestReq);
 
         assertEquals(ImmutableSet.of(Pair.of("role", "bar"), Pair.of("role", "baz")), result);
     }
@@ -192,86 +189,42 @@ public abstract class AbstractSuggestBackendIT {
     public void keySuggest() throws Exception {
         writeSeries(backend, testSeries);
 
-        final KeySuggest.Request request =
-            new KeySuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                MatchOptions.builder().build(), Optional.of("aa"));
-
-        final Set<String> result = backend
-            .keySuggest(request)
-            .get()
-            .getSuggestions()
-            .stream()
-            .map(s -> s.getKey())
-            .collect(Collectors.toSet());
+        final Set<String> result = getKeySuggest(keySuggestReq);
 
         assertEquals(ImmutableSet.of(s1.getKey(), s2.getKey()), result);
     }
 
     @Test
     public void tagValueSuggestNoIdx() throws Exception {
-        final TagValueSuggest.Request request =
-            new TagValueSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                Optional.of("role"));
-
-        final TagValueSuggest result = backend.tagValueSuggest(request).get();
+        final TagValueSuggest result = getTagValueSuggest(tagValueSuggestReq);
 
         assertEquals(Collections.emptyList(), result.getValues());
     }
 
     @Test
     public void tagValuesSuggestNoIdx() throws Exception {
-        final TagValuesSuggest.Request request =
-            new TagValuesSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                OptionalLimit.empty(), ImmutableList.of());
-
-        final TagValuesSuggest result = backend.tagValuesSuggest(request).get();
+        final TagValuesSuggest result = getTagValuesSuggest(tagValuesSuggestReq);
 
         assertEquals(Collections.emptyList(), result.getSuggestions());
     }
 
     @Test
     public void tagKeyCountNoIdx() throws Exception {
-
-        final TagKeyCount.Request request =
-            new TagKeyCount.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                OptionalLimit.empty());
-
-        final TagKeyCount result = backend.tagKeyCount(request).get();
+        final TagKeyCount result = getTagKeyCount(tagKeyCountReq);
 
         assertEquals(Collections.emptyList(), result.getSuggestions());
     }
 
     @Test
     public void tagSuggestNoIdx() throws Exception {
-
-        final TagSuggest.Request request =
-            new TagSuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                MatchOptions.builder().build(), Optional.empty(), Optional.of("ba"));
-
-        final Set<Pair<String, String>> result = backend
-            .tagSuggest(request)
-            .get()
-            .getSuggestions()
-            .stream()
-            .map(s -> Pair.of(s.getKey(), s.getValue()))
-            .collect(Collectors.toSet());
+        final Set<Pair<String, String>> result = getTagSuggest(tagSuggestReq);
 
         assertEquals(Collections.emptySet(), result);
     }
 
     @Test
     public void keySuggestNoIdx() throws Exception {
-        final KeySuggest.Request request =
-            new KeySuggest.Request(TrueFilter.get(), range, OptionalLimit.empty(),
-                MatchOptions.builder().build(), Optional.of("aa"));
-
-        final Set<String> result = backend
-            .keySuggest(request)
-            .get()
-            .getSuggestions()
-            .stream()
-            .map(s -> s.getKey())
-            .collect(Collectors.toSet());
+        final Set<String> result = getKeySuggest(keySuggestReq);
 
         assertEquals(Collections.emptySet(), result);
     }
@@ -322,5 +275,42 @@ public abstract class AbstractSuggestBackendIT {
             writes.add(writeSeries(backend, p.getKey(), p.getValue()));
         }
         async.collectAndDiscard(writes).get();
+    }
+
+    private TagValuesSuggest getTagValuesSuggest(final TagValuesSuggest.Request req)
+        throws ExecutionException, InterruptedException {
+        return backend.tagValuesSuggest(req).get();
+    }
+
+    private TagValueSuggest getTagValueSuggest(final TagValueSuggest.Request req)
+        throws ExecutionException, InterruptedException {
+        return backend.tagValueSuggest(req).get();
+    }
+
+    private TagKeyCount getTagKeyCount(final TagKeyCount.Request req)
+        throws ExecutionException, InterruptedException {
+        return backend.tagKeyCount(req).get();
+    }
+
+    private Set<Pair<String, String>> getTagSuggest(final TagSuggest.Request req)
+        throws ExecutionException, InterruptedException {
+        return backend
+            .tagSuggest(req)
+            .get()
+            .getSuggestions()
+            .stream()
+            .map(s -> Pair.of(s.getKey(), s.getValue()))
+            .collect(Collectors.toSet());
+    }
+
+    private Set<String> getKeySuggest(final KeySuggest.Request req)
+        throws ExecutionException, InterruptedException {
+        return backend
+            .keySuggest(req)
+            .get()
+            .getSuggestions()
+            .stream()
+            .map(s -> s.getKey())
+            .collect(Collectors.toSet());
     }
 }
