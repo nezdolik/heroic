@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 /*
  * Start of a test for LocalMetricManager
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LocalMetricManagerTest {
     private LocalMetricManager manager;
 

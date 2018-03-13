@@ -20,7 +20,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class AbstractExpressionTest<E extends Expression> {
     private final ParseException e = new ParseException("", null, 0, 0, 0, 0);
 

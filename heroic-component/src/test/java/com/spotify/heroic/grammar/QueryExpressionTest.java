@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class QueryExpressionTest extends AbstractExpressionTest<QueryExpression> {
     final Optional<Expression> select = Optional.empty();
     final Optional<MetricType> source = Optional.empty();

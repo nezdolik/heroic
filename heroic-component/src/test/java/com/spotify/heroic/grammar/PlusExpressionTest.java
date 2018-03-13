@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PlusExpressionTest extends AbstractExpressionTest<PlusExpression> {
     @Override
     protected PlusExpression build(final Context ctx) {

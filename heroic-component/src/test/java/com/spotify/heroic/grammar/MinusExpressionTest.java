@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MinusExpressionTest extends AbstractExpressionTest<MinusExpression> {
     @Override
     protected MinusExpression build(final Context ctx) {

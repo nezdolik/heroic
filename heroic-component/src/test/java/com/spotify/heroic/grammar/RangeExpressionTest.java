@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RangeExpressionTest extends AbstractExpressionTest<RangeExpression> {
     @Override
     protected RangeExpression build(final Context ctx) {

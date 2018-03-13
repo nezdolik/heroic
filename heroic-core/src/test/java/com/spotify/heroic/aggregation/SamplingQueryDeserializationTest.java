@@ -1,9 +1,12 @@
 package com.spotify.heroic.aggregation;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spotify.heroic.HeroicMappers;
 import com.spotify.heroic.common.Duration;
 import com.spotify.heroic.grammar.QueryParser;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -16,6 +19,11 @@ import static org.junit.Assert.assertEquals;
 
 public class SamplingQueryDeserializationTest {
     private final ObjectMapper m = HeroicMappers.json(Mockito.mock(QueryParser.class));
+
+    @Before
+    public void setUp(){
+        //m.configure(MapperFeature.INFER_CREATOR_FROM_CONSTRUCTOR_PROPERTIES, true);
+    }
 
     @Test
     public void deserializationTest() throws Exception {

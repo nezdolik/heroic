@@ -10,7 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExpressionTest {
     private final ParseException parseException = new ParseException("", null, 0, 0, 0, 0);
 

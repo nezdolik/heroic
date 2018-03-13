@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static com.spotify.heroic.grammar.ExpressionTests.biFuncTest;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ListExpressionTest extends AbstractExpressionTest<ListExpression> {
     @Override
     protected ListExpression build(final Context ctx) {

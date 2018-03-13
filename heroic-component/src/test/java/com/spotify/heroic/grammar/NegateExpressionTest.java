@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class NegateExpressionTest extends AbstractExpressionTest<NegateExpression> {
     @Before
     public void setupLocal() {

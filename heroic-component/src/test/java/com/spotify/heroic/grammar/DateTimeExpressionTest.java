@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DateTimeExpressionTest extends AbstractExpressionTest<DateTimeExpression> {
     private final LocalDateTime localDate = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0);
     private final String dateString = "2000-01-01 00:00:00.000";

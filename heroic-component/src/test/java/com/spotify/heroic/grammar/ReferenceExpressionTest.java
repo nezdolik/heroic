@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ReferenceExpressionTest extends AbstractExpressionTest<ReferenceExpression> {
     private final String name = "ref";
 

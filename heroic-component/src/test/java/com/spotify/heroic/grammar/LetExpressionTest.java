@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class LetExpressionTest extends AbstractExpressionTest<LetExpression> {
     @Mock
     ReferenceExpression ref;

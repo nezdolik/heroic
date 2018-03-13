@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DivideExpressionTest extends AbstractExpressionTest<DivideExpression> {
     @Override
     protected DivideExpression build(final Context ctx) {

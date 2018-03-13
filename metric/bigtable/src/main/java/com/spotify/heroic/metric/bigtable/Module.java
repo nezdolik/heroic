@@ -32,6 +32,7 @@ public class Module implements HeroicModule {
 
         return () -> {
             config.registerType("bigtable", BigtableMetricModule.class);
+            //System.setProperty("com.spotify.heroic.bigtable.io.netty","com.spotify.heroic.bigtable.");
         };
     }
 }
